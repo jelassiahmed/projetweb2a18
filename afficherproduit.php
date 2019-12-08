@@ -1,13 +1,13 @@
 
 <table border="1">
     <tr>
-        <td>CODE</td>
-        <td>PRIX</td>
+        <td>Id</td>
         <td>MARQUE</td>
-       
-        
+        <td>Prix</td>    
     </tr>
     <?php 
+   include "../Core/produitC.php"; 
+   $Produit1C= new ProduitC();
 
 $con=mysqli_connect('localhost','root','');
 
@@ -15,29 +15,29 @@ if(!$con){
     echo 'Not connected to Database';
 }
 
-if(!mysqli_select_db($con,'mysql')){
+if(!mysqli_select_db($con,'projet_web')){
     echo 'Database not connected';
 }
 
-    $sql = "SELECT `code`, `marque`, `prix`,  FROM `produit`";
+    $sql = "SELECT `code`, `marque`, `prix` FROM `produit`";
     
     $result = mysqli_query($con,$sql);
     if($result->num_rows > 0 ){
         while($row = $result->fetch_assoc()){
-            echo ' . $row["code"]. "</td><td>" . $row["marque"] ' ;
+            echo "<tr><td>" . $row["code"]. "</td><td>" . $row["marque"] . "</td><td>" . $row["prix"]."</td><td>";
         }
         echo "</table>";
     } else{
                 echo "Vide";
           }
-        
-
+          
+$result=$Produit1C->trie_prix();
 ?>
     
 </table>
-<button>Ajouter <a href="ajoutproduit.html"></a> </button>
-<button>Modifier <a href="modifierproduit.php"></a> </button>
-<button>Supprimer <a href="supprimerproduit.php"></a> </button>
+
+<p></p>
+<a href="tables-editable promotions et Publictés.html">	Retour Acceuil </a>
 
 
 

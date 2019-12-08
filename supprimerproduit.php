@@ -11,15 +11,15 @@ if(isset($_POST['delete']))
 		echo 'Not connected to Database';
 	}
 	
-	if(!mysqli_select_db($con,'mysql')){
+	if(!mysqli_select_db($con,'projet_web')){
 		echo 'Database not connected';
 	}
    
    // get values form input text and number
-   $CODE = $_POST['CODE'];  
+   $code= $_POST['code'];  
            
    // mysql query to Update data
-   $sql = "DELETE FROM `produit` WHERE `code` = $CODE";
+   $sql = "DELETE FROM `produit` WHERE `code` = $code";
    
    
    if (!mysqli_query($con,$sql)){
