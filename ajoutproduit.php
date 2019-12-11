@@ -5,7 +5,7 @@ include "../core/produitC.php";
 
 if (isset($_POST['code']))
 {
-$produit1=new Produit($_POST['code'],$_POST['marque'],$_POST['prix']);
+$produit1=new Produit($_POST['code'],$_POST['marque'],$_POST['prix'],$_POST['img']);
 
 $produit1P=new ProduitC();
 $produit1P->ajouterProduit($produit1);

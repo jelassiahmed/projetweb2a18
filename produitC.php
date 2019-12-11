@@ -1,52 +1,106 @@
-<?php
-require_once "../config.php";
-class ProduitC
-{
+<?PHP
+include "../config.php";
+class ProduitC {
+function afficherProduit ($produit){
+		echo "idP: ".$produit->getidP()."<br>";
+		echo "nomP: ".$produit->getNom()."<br>";
+		echo "quantiteP: ".$produit->getQuantite()."<br>";
+		echo "description: ".$produit->getDescription()."<br>";
+		echo "prix: ".$produit->getPrix()."<br>";
+		
+	}
+	//function calculerSalaire($client){
+	//	echo $client->getNbHeures() * $client->getTarifHoraire();
 	
-    
-    public function ajouterProduit($e)
-    {
-    	$referance=$e->getRef();
-    	$nom=$e->getNom();
-    	$prix=$e->getPrix();
-    	$code_barre=$e->getCode();
-    	$quantite=$e->getQuant();
-        $categorie=$e->getCat();
-        $img=$e->getImg();
-        
-
-    	$sql = "INSERT INTO produit (referance,nom,prix,code_barre,categorie,quantite,img)
-VALUES ('$referance','$nom',$prix,'$code_barre','$categorie',$quantite,'$img')";
-
-$c=config::getConnexion();
-$c->exec($sql);
-
+	function ajouterProduit($produit){ 
+		$sql="insert into produit (code,marque,prix,img) values (:code,:marque,:prix,:img)";
+		$db = config::getConnexion();
+		try{
+        $req=$db->prepare($sql);
+        $code=$produit->getcode();
+        $marque=$produit->getmarque();
+        $prix=$produit->getPrix();
+        $img=$produit->getimg();
+		$req->bindValue(':code',$code);
+		$req->bindValue(':marque',$marque);
+        $req->bindValue(':prix',$prix);
+        $req->bindValue(':img',$img);
+            $req->execute();
+        }
+        catch (Exception $e){
+            echo 'Erreur: '.$e->getMessage();
+        }
+		
+	}
+	
+	function afficherproduits(){
+		//$sql="SElECT * From employe e inner join formationphp.employe a on e.idC= a.idC";
+		$sql="SElECT * From produit";
+		$db = config::getConnexion();
+		try{
+		$liste=$db->query($sql);
+		return $liste;
+		}
+        catch (Exception $e){
+            die('Erreur: '.$e->getMessage());
+        }	
+	}
+	
+	function modifierproduit($produit,$code){
+		$sql="UPDATE produit SET code=:code, marque=:marque,prix=:prix, img=:img WHERE code=:code";
+		
+		$db = config::getConnexion();
+		//$db->setAttribute(PDO::ATTR_EMULATE_PREPARES,false);
+try{		
+        $req=$db->prepare($sql);
+		$code=$produit->getcode();
+        $marque=$produit->getmarque();
+        $prix=$produit->getPrix();
+        $img=$produit->getimg();
+$datas = array( ':code'=>$code, ':marque'=>$marque,':prix'=>$prix,':img'=>$img);
+	
+		$req->bindValue(':code',$code);
+		$req->bindValue(':marque',$marque);
+        $req->bindValue(':prix',$prix);
+        $req->bindValue(':img',$img);		
+            $s=$req->execute();
+			
+           // header('Location: index.php');
+        }
+        catch (Exception $e){
+            echo " Erreur ! ".$e->getMessage();
+   echo " Les datas : " ;
+  print_r($datas);
+        }
+		
+	}
+	
+	
+	function trie_prix(){
+		
+        $sql="SElECT * From produit ORDER BY(prix) ASC";
+        $db = config::getConnexion();
+        try{
+        $liste=$db->query($sql);
+        return $liste;
+        }
+        catch (Exception $e){
+            die('Erreur: '.$e->getMessage());
+        }
     }
-    public function afficherProduit()
-    {
-    	$c=config::getConnexion();
-    	$sql = "SELECT * FROM produit";
-
- return $result = $c->query($sql);
-
-}
-public function afficherUnProduit()
-    {
-        
-        $sql = "SELECT * FROM produit ";
-        $c=config::getConnexion();
-       $result = $c->query($sql);
-       
-
- return $result ;
-
- 
-   
-    
-       
-}
-public function RecupererProduit($referance){
-		$sql="SELECT * from Produit where (referance=$referance)";
+    /*function recherchemarque($marque){
+        $sql="SELECT * FROM produit WHERE Cat LIKE '$marque' ";
+        $db = config:: getConnexion();
+        try{
+        $liste=$db->query($sql);
+        return $liste;
+        }
+        catch (Exception $e){
+            die('Erreur: '.$e->getMessage());
+        }
+    }*/
+    function rechercherProduit($code){
+		$sql="SELECT * from produit where code like '%".$code."%' ";
 		$db = config::getConnexion();
 		try{
 		$liste=$db->query($sql);
@@ -56,58 +110,6 @@ public function RecupererProduit($referance){
             die('Erreur: '.$e->getMessage());
         }
 	}
-function getre()
-{
-    $c=config::getConnexion();
-        $sql = "SELECT * FROM produit";
 
- return $result = $c->query($sql);
 }
- public function supprimerProduit($referance)	
- {
- 	$c=config::getConnexion();
- 	$sql = "DELETE  FROM `produit` WHERE `referance`=:referance";
- 	$req= $c->prepare($sql);
- 	$req->bindValue(':referance',$referance);
-$req->execute();
-
- }
- function modifierProduit($e){
-        $sql="UPDATE produit SET referance=:referance, nom=:nom,prix=:prix,code_barre=:code_barre,categorie=:categorie,quantite=:quantite WHERE referance=:referance";
-        
-        $db = config::getConnexion();
-        //$db->setAttribute(PDO::ATTR_EMULATE_PREPARES,false);
-try{        
-        $req=$db->prepare($sql);
-     $referance=$e->getRef();
-        $nom=$e->getNom();
-        $prix=$e->getPrix();
-        $code_barre=$e->getCode();
-        $quantite=$e->getQuant();
-        $categorie=$e->getCat();
-        $img=$e->getImg();
-
-        $datas = array(':referance'=>$referance, ':referance'=>$referance, ':nom'=>$nom,':prix'=>$prix,':code_barre'=>$code_barre,':quantite'=>$quantite,':categorie'=>$categorie,':img'=>$img);
-        $req->bindValue(':referance',$referance);
-        $req->bindValue(':referance',$referance);
-        $req->bindValue(':nom',$nom);
-        $req->bindValue(':prix',$prix);
-        $req->bindValue(':code_barre',$code_barre);
-        $req->bindValue(':quantite',$quantite);
-        $req->bindValue(':categorie',$categorie);
-        $req->bindValue(':img',$img);
-        
-            $s=$req->execute();
-            
-           
-        }
-        catch (Exception $z){
-            echo " Erreur ! ".$z->getMessage();
-   echo " Les datas : " ;
-  print_r($datas);
-        }
-        
-    }
-}
-
 ?>
